@@ -40,10 +40,12 @@ export class ConfigService {
 
       host: this.getValue('DB_HOST'),
       port: parseInt(this.getValue('DB_PORT')),
-      username: 'postgres_owner',
-      password: 'owner_password',
-      // username: 'postgres_visitor',
-      // password: 'visitor_password',
+      // username: 'postgres_owner',
+      // password: 'owner_password',
+
+      username: 'postgres_visitor',
+      password: 'visitor_password',
+
       // this.getValue('DB_USERNAME'),
       // this.getValue('DB_PASSWORD'),
       database: this.getValue('DB_DATABASE'),

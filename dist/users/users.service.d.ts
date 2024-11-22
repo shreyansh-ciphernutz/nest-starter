@@ -10,7 +10,7 @@ export declare class UsersService {
     constructor(userService: Repository<User>, dataSource: DataSource, sessionService: SessionService);
     create(createUserDto: CreateUserDto): string;
     findAll(): Promise<string>;
-    login(email: string, password: string): Promise<void>;
+    login(email: string, password: string): Promise<User>;
     findOne(id: string): Promise<User>;
     update(id: number, updateUserDto: UpdateUserDto): string;
     remove(id: number): string;

@@ -9,7 +9,7 @@ export declare class UsersController {
     login(input: {
         email: string;
         password: string;
-    }): Promise<void>;
+    }): Promise<import("./entities/user.entity").User>;
     findOne(id: string): Promise<import("./entities/user.entity").User>;
     update(id: string, updateUserDto: UpdateUserDto): string;
     remove(id: string): string;

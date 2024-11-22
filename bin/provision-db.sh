@@ -3,7 +3,7 @@ set -e
 
 SERVER="nest-starter"
 PW="root"
-DB="exampledb"
+DB="postgres"
 USER="postgres_visitor"
 USER_PW="visitor_password" 
 OWNER="postgres_owner"
@@ -19,11 +19,15 @@ echo "Stopping and removing old docker [$SERVER]"
   -e PGPASSWORD=$PW \
   -p 5432:5432 \
   -d postgres
-[l[]H9ty
-]]gy84-gl]
+
 # Wait for PostgreSQL to start
 echo "Waiting for pg-server [$SERVER] to start"
 sleep 5  # Increased sleep time for PostgreSQL to be ready
+
+# drop schema public
+echo "DROP SCHEMA IF EXISTS public CASCADE;" | docker exec -i $SERVER psql -U postgres
+
+echo "revoke all on schema public from public"| docker exec -i $SERVER psql -U postgres
 
 # Create the database using the postgres user
 echo "Creating database $DB with encoding 'UTF-8'"
@@ -34,29 +38,12 @@ echo "Creating user $USER"
 echo "CREATE USER $USER WITH PASSWORD '$USER_PW';" | docker exec -i $SERVER psql -U postgres
 echo "CREATE USER $OWNER WITH PASSWORD '$OWNER_PW' SUPERUSER;" | docker exec -i $SERVER psql -U postgres
 echo "CREATE USER $AUTHENTICATOR WITH PASSWORD '$AUTHENTICATOR_PW' NOINHERIT;" | docker exec -i $SERVER psql -U postgres
-echo "GRANT ${USER} TO ${AUTHENTICATOR};"
 
-echo "list of all created users of pg admin"
-# Grant privileges to the new user on the database
-echo "Granting ALL privileges on database $DB to user $USER"
-echo "GRANT ALL PRIVILEGES ON DATABASE $DB TO $USER;" | docker exec -i $SERVER psql -U postgres
-
-# Grant USAGE and CREATE privileges on the public schema to the new user
-echo "Granting USAGE and CREATE privileges on public schema to user $USER"
-echo "GRANT USAGE, CREATE ON SCHEMA public TO $USER;" | docker exec -i $SERVER psql -U postgres
-
-# Ensure the user has the necessary privileges on sequences and functions
-echo "Setting default privileges for user $USER"
-echo "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO $USER;" | docker exec -i $SERVER psql -U postgres
-echo "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT EXECUTE ON FUNCTIONS TO $USER;" | docker exec -i $SERVER psql -U postgres
-
-# Confirm permissions for the user
-echo "Confirming permissions for user $USER"
-docker exec -i $SERVER psql -U postgres -d $DB -c "\dn+ public"
-docker exec -i $SERVER psql -U postgres -d $DB -c "\dp"
-
-# List databases to confirm
-echo "Listing databases"
-echo "\l" | docker exec -i $SERVER psql -U postgres
-
-echo "Database and user created successfully."
+# granting all the access to visitor
+echo "create schema public;" | docker exec -i $SERVER psql -U postgres
+echo "grant usage on schema public to $USER;" | docker exec -i $SERVER psql -U postgres
+echo "GRANT USAGE, CREATE ON SCHEMA public TO $USER;"|docker exec -i $SERVER psql -U postgres
+echo "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $USER;"|docker exec -i $SERVER psql -U postgres
+echo "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO $USER;"|docker exec -i $SERVER psql -U postgres
+echo "GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO $USER;"|docker exec -i $SERVER psql -U postgres
+echo "GRANT CREATE ON DATABASE $DB TO $USER;"|docker exec -i $SERVER psql -U postgres
