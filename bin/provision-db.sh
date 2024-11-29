@@ -3,7 +3,7 @@ set -e
 
 SERVER="nest-starter"
 PW="root"
-DB="exampledb"
+DB="postgres"
 USER="postgres_visitor"
 USER_PW="visitor_password" 
 OWNER="postgres_owner"
@@ -32,23 +32,29 @@ echo "DROP SCHEMA IF EXISTS public CASCADE;" | docker exec -i $SERVER psql -U po
 echo "revoke all on schema public from public"| docker exec -i $SERVER psql -U postgres
 
 # Create the database using the postgres user
-
-# Create the new user
-echo "Creating user $USER"
-echo "CREATE USER $USER WITH PASSWORD '$USER_PW';" | docker exec -i $SERVER psql -U postgres
-echo "CREATE USER $OWNER WITH PASSWORD '$OWNER_PW' SUPERUSER;" | docker exec -i $SERVER psql -U postgres
-echo "CREATE USER $AUTHENTICATOR WITH PASSWORD '$AUTHENTICATOR_PW' NOINHERIT;" | docker exec -i $SERVER psql -U postgres
-
-# granting all the access to visitor
-echo "create schema public;" | docker exec -i $SERVER psql -U postgres
-echo "grant usage on schema public to $USER;" | docker exec -i $SERVER psql -U postgres
-echo "GRANT USAGE, CREATE ON SCHEMA public TO $USER;"|docker exec -i $SERVER psql -U postgres
-echo "GRANT $USER TO $AUTHENTICATOR;"|docker exec -i $SERVER psql -U postgres
-echo "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $USER;"|docker exec -i $SERVER psql -U postgres
-echo "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO $USER;"|docker exec -i $SERVER psql -U postgres
-echo "GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO $USER;"|docker exec -i $SERVER psql -U postgres
-echo "GRANT CREATE ON DATABASE $DB TO $USER;"|docker exec -i $SERVER psql -U postgres
-
-
 echo "Creating database $DB with encoding 'UTF-8'"
 echo "CREATE DATABASE $DB ENCODING 'UTF-8';" | docker exec -i $SERVER psql -U postgres
+echo "create schema public;" | docker exec -i $SERVER psql -U postgres
+
+echo "Creating user $USER"
+echo "CREATE USER $USER WITH PASSWORD '$USER_PW';" | docker exec -i $SERVER psql -U postgres
+
+# Create the new user
+# echo "CREATE USER $OWNER WITH PASSWORD '$OWNER_PW' SUPERUSER;" | docker exec -i $SERVER psql -U postgres
+# echo "CREATE USER $AUTHENTICATOR WITH PASSWORD '$AUTHENTICATOR_PW' NOINHERIT;" | docker exec -i $SERVER psql -U postgres
+echo "GRANT CONNECT ON DATABASE $DB TO $USER;" | docker exec -i $SERVER psql -U postgres
+# granting all the access to visitor
+
+docker exec -i $SERVER psql -U postgres -d $DB <<EOF
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+EOF
+
+echo "Granting full privileges on schema public to user $USER"
+docker exec -i $SERVER psql -U postgres -d $DB <<EOF
+GRANT ALL PRIVILEGES ON SCHEMA public TO $USER;
+GRANT USAGE, CREATE ON SCHEMA public TO $USER;
+EOF
+
+echo "grant usage on schema public to $USER;" | docker exec -i $SERVER psql -U postgres
+
+echo "GRANT CREATE ON DATABASE $DB TO $USER;"|docker exec -i $SERVER psql -U postgres
