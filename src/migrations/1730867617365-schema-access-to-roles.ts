@@ -4,6 +4,8 @@ export class SchemaAccessToRoles1731066607029 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         // Grant USAGE on the schema to the visitor
+       
+
         await queryRunner.query(
             `GRANT USAGE ON SCHEMA public TO postgres_visitor`
         );
