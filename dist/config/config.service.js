@@ -54,6 +54,31 @@ class ConfigService {
             },
         };
     }
+    getAdminTypeOrmConfig() {
+        const baseDir = path.join(__dirname, '..');
+        return {
+            type: 'postgres',
+            host: this.getValue('DB_HOST'),
+            port: parseInt(this.getValue('DB_PORT')),
+            username: 'postgres_owner',
+            password: 'owner_password',
+            database: this.getValue('DB_DATABASE'),
+            entities: [baseDir + '/**/*.entity{.ts,.js}'],
+            synchronize: false,
+            namingStrategy: new typeorm_naming_strategies_1.SnakeNamingStrategy(),
+            migrations: [baseDir + '/migrations/**/*{.ts,.js}'],
+            migrationsTableName: 'typeorm_migrations',
+            ssl: false,
+            subscribers: [entity_subscriber_1.EntitySubscriber],
+            logging: true,
+            extra: {
+                max: 10,
+                min: 2,
+                idleTimeoutMillis: 30000,
+                connectionTimeoutMillis: 2000,
+            },
+        };
+    }
     get(key) {
         return this.getValue(key);
     }
