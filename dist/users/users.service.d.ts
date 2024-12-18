@@ -5,9 +5,10 @@ import { DataSource, Repository } from "typeorm";
 import { SessionService } from "@/session/session.service";
 export declare class UsersService {
     private readonly userService;
+    private readonly ownerService;
     private dataSource;
     private readonly sessionService;
-    constructor(userService: Repository<User>, dataSource: DataSource, sessionService: SessionService);
+    constructor(userService: Repository<User>, ownerService: Repository<User>, dataSource: DataSource, sessionService: SessionService);
     create(createUserDto: CreateUserDto): string;
     findAll(): Promise<string>;
     login(email: string, password: string): Promise<User>;

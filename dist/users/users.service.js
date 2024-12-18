@@ -19,8 +19,9 @@ const user_entity_1 = require("./entities/user.entity");
 const typeorm_2 = require("typeorm");
 const session_service_1 = require("../session/session.service");
 let UsersService = class UsersService {
-    constructor(userService, dataSource, sessionService) {
+    constructor(userService, ownerService, dataSource, sessionService) {
         this.userService = userService;
+        this.ownerService = ownerService;
         this.dataSource = dataSource;
         this.sessionService = sessionService;
     }
@@ -33,14 +34,18 @@ let UsersService = class UsersService {
       FROM pg_roles
       WHERE rolname = current_user;
       `);
+        const connection2test = await this.ownerService.query(`SELECT *
+      FROM pg_roles
+      WHERE rolname = current_user;`);
         console.log(currentUserCheck, "currentUserCheck******");
+        console.log('connection2test :>> ', connection2test);
         const data = await this.userService.find();
         console.log("data :>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", data);
         return `This action returns all users`;
     }
     async login(email, password) {
         await this.dataSource.query("delete from public.session");
-        const user = await this.userService.findOne({ where: { email, password } });
+        const user = await this.ownerService.findOne({ where: { email, password } });
         console.log("user :>> ", user);
         const session = await this.sessionService.create(user);
         console.log(session, "session ******");
@@ -75,8 +80,10 @@ exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __param(1, (0, typeorm_1.InjectDataSource)()),
+    __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.User, "owner")),
+    __param(2, (0, typeorm_1.InjectDataSource)()),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.DataSource,
         session_service_1.SessionService])
 ], UsersService);

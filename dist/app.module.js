@@ -21,6 +21,7 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forRoot(config_service_1.configService.getTypeOrmConfig()),
+            typeorm_1.TypeOrmModule.forRoot(config_service_1.configService.getAdminTypeOrmConfig()),
             users_module_1.UsersModule,
             session_module_1.SessionModule,
         ],

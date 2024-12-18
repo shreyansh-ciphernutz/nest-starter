@@ -1,4 +1,4 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 export declare class ConfigService {
     private env;
     constructor(env: {
@@ -9,6 +9,7 @@ export declare class ConfigService {
     isProduction(): boolean;
     isDev(): boolean;
     getTypeOrmConfig(): TypeOrmModuleOptions;
+    getAdminTypeOrmConfig(): TypeOrmModuleOptions;
     get(key: any): string;
 }
 declare const configService: ConfigService;

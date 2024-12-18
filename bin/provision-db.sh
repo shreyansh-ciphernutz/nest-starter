@@ -40,7 +40,7 @@ echo "Creating user $USER"
 echo "CREATE USER $USER WITH PASSWORD '$USER_PW';" | docker exec -i $SERVER psql -U postgres
 
 # Create the new user
-# echo "CREATE USER $OWNER WITH PASSWORD '$OWNER_PW' SUPERUSER;" | docker exec -i $SERVER psql -U postgres
+echo "CREATE USER $OWNER WITH PASSWORD '$OWNER_PW' SUPERUSER;" | docker exec -i $SERVER psql -U postgres
 # echo "CREATE USER $AUTHENTICATOR WITH PASSWORD '$AUTHENTICATOR_PW' NOINHERIT;" | docker exec -i $SERVER psql -U postgres
 echo "GRANT CONNECT ON DATABASE $DB TO $USER;" | docker exec -i $SERVER psql -U postgres
 # granting all the access to visitor
