@@ -30,7 +30,7 @@ let SessionService = class SessionService {
 exports.SessionService = SessionService;
 exports.SessionService = SessionService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(session_entity_1.Session)),
+    __param(0, (0, typeorm_1.InjectRepository)(session_entity_1.Session, "owner")),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], SessionService);
 //# sourceMappingURL=session.service.js.map

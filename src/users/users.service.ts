@@ -10,6 +10,8 @@ import { SessionService } from "@/session/session.service";
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userService: Repository<User>,
+    @InjectRepository(User, "owner")
+    private readonly ownerService: Repository<User>,
     @InjectDataSource() private dataSource: DataSource,
     private readonly sessionService: SessionService
   ) {}
@@ -23,7 +25,11 @@ export class UsersService {
       FROM pg_roles
       WHERE rolname = current_user;
       `);
+    const connection2test = await this.ownerService.query(`SELECT *
+      FROM pg_roles
+      WHERE rolname = current_user;`);
     console.log(currentUserCheck, "currentUserCheck******");
+    console.log('connection2test :>> ', connection2test);
     const data = await this.userService.find();
     console.log("data :>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", data);
     return `This action returns all users`;
@@ -32,7 +38,7 @@ export class UsersService {
   async login(email: string, password: string) {
     // TODO: remove this deletion of table data
     await this.dataSource.query("delete from public.session");
-    const user = await this.userService.findOne({ where: { email, password } });
+    const user = await this.ownerService.findOne({ where: { email, password } });
     console.log("user :>> ", user);
     const session = await this.sessionService.create(user);
     console.log(session, "session ******");

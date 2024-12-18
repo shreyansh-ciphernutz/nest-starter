@@ -1,8 +1,8 @@
-import * as path from 'path';
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import * as dotenv from 'dotenv';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { EntitySubscriber } from '../subscriber/entity.subscriber';
+import * as path from "path";
+import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import * as dotenv from "dotenv";
+import { SnakeNamingStrategy } from "typeorm-naming-strategies";
+import { EntitySubscriber } from "../subscriber/entity.subscriber";
 
 dotenv.config();
 
@@ -24,36 +24,29 @@ export class ConfigService {
   }
 
   public isProduction() {
-    const mode = this.getValue('NODE_ENV', false);
-    return mode === 'production';
+    const mode = this.getValue("NODE_ENV", false);
+    return mode === "production";
   }
 
   public isDev() {
-    const mode = this.getValue('NODE_ENV', false);
-    return mode === 'development';
+    const mode = this.getValue("NODE_ENV", false);
+    return mode === "development";
   }
 
   public getTypeOrmConfig(): TypeOrmModuleOptions {
-    const baseDir = path.join(__dirname, '..');
+    const baseDir = path.join(__dirname, "..");
     return {
-      type: 'postgres',
-
-      host: this.getValue('DB_HOST'),
-      port: parseInt(this.getValue('DB_PORT')),
-      // username: 'postgres_owner',
-      // password: 'owner_password',
-
-      username: 'postgres_visitor',
-      password: 'visitor_password',
-
-      // this.getValue('DB_USERNAME'),
-      // this.getValue('DB_PASSWORD'),
-      database: this.getValue('DB_DATABASE'),
-      entities: [baseDir + '/**/*.entity{.ts,.js}'],
+      type: "postgres",
+      host: this.getValue("DB_HOST"),
+      port: parseInt(this.getValue("DB_PORT")),
+      username: "postgres_visitor",
+      password: "visitor_password",
+      database: this.getValue("DB_DATABASE"),
+      entities: [baseDir + "/**/*.entity{.ts,.js}"],
       synchronize: false,
       namingStrategy: new SnakeNamingStrategy(),
-      migrations: [baseDir + '/migrations/**/*{.ts,.js}'],
-      migrationsTableName: 'typeorm_migrations',
+      migrations: [baseDir + "/migrations/**/*{.ts,.js}"],
+      migrationsTableName: "typeorm_migrations",
       ssl: false,
       subscribers: [EntitySubscriber],
       logging: true,
@@ -66,26 +59,20 @@ export class ConfigService {
     };
   }
   public getAdminTypeOrmConfig(): TypeOrmModuleOptions {
-    const baseDir = path.join(__dirname, '..');
+    const baseDir = path.join(__dirname, "..");
     return {
-      type: 'postgres',
-
-      host: this.getValue('DB_HOST'),
-      port: parseInt(this.getValue('DB_PORT')),
-      username: 'postgres_owner',
-      password: 'owner_password',
-
-      // username: 'postgres_visitor',
-      // password: 'visitor_password',
-
-      // this.getValue('DB_USERNAME'),
-      // this.getValue('DB_PASSWORD'),
-      database: this.getValue('DB_DATABASE'),
-      entities: [baseDir + '/**/*.entity{.ts,.js}'],
+      name: "owner",
+      type: "postgres",
+      host: this.getValue("DB_HOST"),
+      port: parseInt(this.getValue("DB_PORT")),
+      username: "postgres_owner",
+      password: "owner_password",
+      database: this.getValue("DB_DATABASE"),
+      entities: [baseDir + "/**/*.entity{.ts,.js}"],
       synchronize: false,
       namingStrategy: new SnakeNamingStrategy(),
-      migrations: [baseDir + '/migrations/**/*{.ts,.js}'],
-      migrationsTableName: 'typeorm_migrations',
+      migrations: [baseDir + "/migrations/**/*{.ts,.js}"],
+      migrationsTableName: "typeorm_migrations",
       ssl: false,
       subscribers: [EntitySubscriber],
       logging: true,
@@ -104,13 +91,13 @@ export class ConfigService {
 }
 
 const configService = new ConfigService(process.env).ensureValues([
-  'NODE_ENV',
-  'DB_HOST',
-  'DB_PORT',
-  'DB_USERNAME',
-  'DB_PASSWORD',
-  'DB_DATABASE',
-  'JWT_SECRET',
+  "NODE_ENV",
+  "DB_HOST",
+  "DB_PORT",
+  "DB_USERNAME",
+  "DB_PASSWORD",
+  "DB_DATABASE",
+  "JWT_SECRET",
 ]);
 
 export { configService };

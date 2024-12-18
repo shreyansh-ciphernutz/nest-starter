@@ -17,7 +17,7 @@ let SessionModule = class SessionModule {
 exports.SessionModule = SessionModule;
 exports.SessionModule = SessionModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([session_entity_1.Session])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([session_entity_1.Session], "owner")],
         controllers: [session_controller_1.SessionController],
         providers: [session_service_1.SessionService],
         exports: [session_service_1.SessionService],

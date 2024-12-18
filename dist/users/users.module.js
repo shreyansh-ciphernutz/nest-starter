@@ -18,7 +18,11 @@ let UsersModule = class UsersModule {
 exports.UsersModule = UsersModule;
 exports.UsersModule = UsersModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]), session_module_1.SessionModule],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User], "owner"),
+            session_module_1.SessionModule,
+        ],
         controllers: [users_controller_1.UsersController],
         providers: [users_service_1.UsersService],
     })

@@ -4,10 +4,9 @@ import { configService } from "./config.service";
 const datasource = new DataSource(
   configService.getTypeOrmConfig() as DataSourceOptions
 );
-const adminDatasource = new DataSource(
-  configService.getAdminTypeOrmConfig() as DataSourceOptions
-);
-adminDatasource.initialize();
+// const datasource1 = new DataSource(
+//   configService.getAdminTypeOrmConfig() as DataSourceOptions
+// );
 datasource.initialize();
-export default datasource;
-export { adminDatasource };
+// datasource1.initialize();
+export  default datasource;
