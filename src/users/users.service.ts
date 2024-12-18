@@ -20,25 +20,16 @@ export class UsersService {
   }
 
   async findAll() {
-    const currentUserCheck = await this.dataSource.query(`
-      SELECT *
-      FROM pg_roles
-      WHERE rolname = current_user;
-      `);
-    const connection2test = await this.ownerService.query(`SELECT *
-      FROM pg_roles
-      WHERE rolname = current_user;`);
-    console.log(currentUserCheck, "currentUserCheck******");
-    console.log('connection2test :>> ', connection2test);
     const data = await this.userService.find();
-    console.log("data :>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", data);
-    return `This action returns all users`;
+    return data;
   }
 
   async login(email: string, password: string) {
     // TODO: remove this deletion of table data
     await this.dataSource.query("delete from public.session");
-    const user = await this.ownerService.findOne({ where: { email, password } });
+    const user = await this.ownerService.findOne({
+      where: { email, password },
+    });
     console.log("user :>> ", user);
     const session = await this.sessionService.create(user);
     console.log(session, "session ******");

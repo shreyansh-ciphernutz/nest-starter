@@ -4,7 +4,11 @@ exports.UserRls1730985527546 = void 0;
 class UserRls1730985527546 {
     async up(queryRunner) {
         await queryRunner.query(`ALTER TABLE public.user ENABLE ROW LEVEL SECURITY;`);
-        await queryRunner.query(`CREATE POLICY user_data_access_policy ON public.user FOR SELECT TO postgres_visitor USING (FALSE);`);
+        await queryRunner.query(`CREATE POLICY user_data_access_policy 
+        ON public.user 
+        FOR SELECT 
+        TO postgres_visitor 
+        USING (public.user.id = current_user_id())`);
         await queryRunner.query(`ALTER TABLE public.user FORCE ROW LEVEL SECURITY;`);
     }
     async down(queryRunner) {
